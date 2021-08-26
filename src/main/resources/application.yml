@@ -1,0 +1,16 @@
+
+server:
+  port: 8112
+  servlet:
+    context-path: /digital-diary
+
+#DNS seeding list connection string for MongoDB
+spring:
+  data:
+    mongodb:
+      uri: mongodb+srv://m001-student:m001-mongodb-basics@sandbox.hz9gs.mongodb.net/digital_diary?retryWrites=true&w=majority
+
+#sort the API paths in order of their HTTP methods
+springdoc:
+  swagger-ui:
+    operationsSorter: method
