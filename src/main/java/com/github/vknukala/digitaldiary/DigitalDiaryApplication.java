@@ -1,17 +1,15 @@
 package com.github.vknukala.digitaldiary;
 
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
-import io.swagger.v3.oas.annotations.info.Info;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 
-@OpenAPIDefinition(
+/*@OpenAPIDefinition(
         info = @Info(
                 title = "Digital Diary API",
                 version = "v0.0.1",
                 description = "This is a digital diary API for creating/updating users and " +
-                        "storing/editing user's thoughts, pictures ."))
+                        "storing/editing user's thoughts, pictures ."))*/
 @SpringBootApplication
 @ConfigurationPropertiesScan("com.github.vknukala.digitaldiary.config")
 public class DigitalDiaryApplication {

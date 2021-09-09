@@ -1,20 +1,21 @@
-/*
 package com.github.vknukala.digitaldiary.config;
 
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoClients;
+import com.github.vknukala.digitaldiary.model.User;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.mongodb.core.MongoOperations;
-import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.domain.AuditorAware;
+import org.springframework.data.mongodb.config.EnableMongoAuditing;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+
+import java.util.Optional;
 
 @Configuration
+@EnableMongoAuditing
 public class MongoDbConfig  {
 
-    */
-/*
-     * Use the standard Mongo driver API to create a com.mongodb.client.MongoClient instance.
-     *//*
+     /** Use the standard Mongo driver API to create a com.mongodb.client.MongoClient instance.
+
 
     @Bean
     public MongoClient mongoClient(){
@@ -24,7 +25,23 @@ public class MongoDbConfig  {
     @Bean
     public MongoOperations mongoOperations(){
         return new MongoTemplate(mongoClient(),"digital_diary");
-    }
+    }**/
+
+    /**
+     * Enable auditing
+     * @return
+     */
+     @Bean
+    public AuditorAware<String> auditProvider(){
+        return () -> {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            User user = null;
+            if (authentication == null || !authentication.isAuthenticated()) {
+                user =  (User) authentication.getPrincipal();
+            }
+
+            return Optional.ofNullable(user).map(User::getUsername);
+         };
+     }
 
 }
-*/

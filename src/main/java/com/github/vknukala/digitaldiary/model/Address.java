@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import javax.validation.constraints.NotEmpty;
@@ -17,6 +18,9 @@ import java.io.Serializable;
 public class Address implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    @Field("type")
+    @NonNull()
+    private AddressType addressType;
     @Field("address_line_one")
     @NotEmpty(message = "AddressLineOne field should not be empty")
     private String addressLineOne;
@@ -32,5 +36,10 @@ public class Address implements Serializable {
     @Field("state")
     @NotEmpty(message = "State field should not be empty")
     private String state;
+
+
+    enum AddressType {
+        HOME, OFFICE
+    }
 
 }

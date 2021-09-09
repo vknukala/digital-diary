@@ -1,46 +1,56 @@
 package com.github.vknukala.digitaldiary.service;
 
+import com.github.vknukala.digitaldiary.dto.CreateUserRequest;
+import com.github.vknukala.digitaldiary.mapper.UserMapper;
 import com.github.vknukala.digitaldiary.model.User;
-import com.github.vknukala.digitaldiary.model.UserDiaryNote;
-import com.github.vknukala.digitaldiary.repository.UserDiaryNoteRepository;
 import com.github.vknukala.digitaldiary.repository.UserRepository;
+import com.github.vknukala.digitaldiary.view.UserView;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.validation.ValidationException;
 import java.util.List;
-import java.util.Optional;
+
+import static java.lang.String.format;
 
 @Service
+@RequiredArgsConstructor
 @Slf4j
-public class UserService {
+public class UserService  implements UserDetailsService{
 
-    @Autowired
-    UserRepository userRepository;
 
-    @Autowired
-    UserDiaryNoteRepository userDiaryNoteRepository;
+    private final UserRepository userRepository;
+    private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
+
+    public UserView createUser(CreateUserRequest createUserRequest){
+        log.info("trying to create the user {}", createUserRequest.getUsername());
+        if (userRepository.findByUsername(createUserRequest.getUsername()).isPresent()) {
+            throw new ValidationException("Username already exists");
+        }
+
+        User user = userMapper.toUser(createUserRequest);
+        user.setPassword(passwordEncoder.encode(createUserRequest.getPassword()));
+        user = userRepository.save(user);
+        UserView userView = userMapper.toUserView(user);
+        log.info("User detals::{}", userView);
+        return userView;
+    }
+
+
+    public User loadUserByUsername(String username) throws UsernameNotFoundException {
+        log.info("Retrieve user details for {}", username);
+        return userRepository.findByUsername(username).orElseThrow(()->new UsernameNotFoundException(
+                format("user name - %s not valid",username)));
+    }
 
     public List<User> getUsers() {
         List<User> users = userRepository.findAll();
         log.info("Total users are {}", users.size());
         return users;
     }
-
-    public User saveUser(User user) {
-        return userRepository.save(user);
-    }
-
-    public Optional<User> findByUserId(String userId) {
-        return userRepository.findById(userId);
-    }
-
-    public UserDiaryNote createUserDiaryNote(UserDiaryNote userDiaryNote) {
-        return userDiaryNoteRepository.save(userDiaryNote);
-    }
-
-    public List<UserDiaryNote> getUserDiaryNotes(String userId) {
-        return userDiaryNoteRepository.getDiaryNotesByUserId(userId);
-    }
-
 }

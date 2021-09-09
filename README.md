@@ -1,7 +1,7 @@
 **Digital Diary API**
 
 This is an API for creating new users and store their personal thoughts, memoris, pictures etc
-It uses Spring boot framework and Mongo DB for persistance.
+It uses Spring boot framework and Mongo DB for persistance. JWT token authentication is used for authenticating the resources
 
 The following are the REST end points
 

@@ -10,7 +10,28 @@ spring:
     mongodb:
       uri: mongodb+srv://m001-student:m001-mongodb-basics@sandbox.hz9gs.mongodb.net/digital_diary?retryWrites=true&w=majority
 
-#sort the API paths in order of their HTTP methods
+#  security:
+#    filter:
+#      order: 10
+
 springdoc:
+  api-docs:
+    path: /rest-api-docs
+    enabled: true
+
   swagger-ui:
+    path: /swagger-ui
     operationsSorter: method
+
+
+
+
+
+
+
+
+
+
+
+
+

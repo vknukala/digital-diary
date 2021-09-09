@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface UserDiaryNoteRepository extends MongoRepository<UserDiaryNote, String> {
-    List<UserDiaryNote> getDiaryNotesByUserId(String userId);
+    List<UserDiaryNote> getDiaryNotesByUsername(String username);
 }

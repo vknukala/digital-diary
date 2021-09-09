@@ -1,3 +1,4 @@
+/*
 package com.github.vknukala.digitaldiary;
 
 import com.github.vknukala.digitaldiary.model.User;
@@ -11,12 +12,14 @@ import org.springframework.data.mongodb.core.SimpleMongoClientDatabaseFactory;
 
 import java.util.List;
 
+*/
 /**
  * This is MongoDB connection test. It uses {@link SimpleMongoClientDatabaseFactory} to get the
  * {@link com.mongodb.client.MongoDatabase} object with additional {@code username}, {@code password}
  * and {@code dbname}
  *
- */
+ *//*
+
 public class MongoDBConnectionTest {
 
     static MongoOperations mongoOps;
@@ -31,6 +34,7 @@ public class MongoDBConnectionTest {
     @Test
     public void testUserDetails(){
         List<User> users = mongoOps.findAll(User.class,"users");
-        Assertions.assertEquals(3,users.size(),"The total users are");
+        Assertions.assertEquals(5,users.size(),"The total users are");
     }
 }
+*/
