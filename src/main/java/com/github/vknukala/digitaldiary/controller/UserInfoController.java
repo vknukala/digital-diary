@@ -22,11 +22,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
-@RequestMapping("/v1")
+@RequestMapping("/v1/user")
 @Slf4j
 @RestController
 @Validated
@@ -37,7 +35,7 @@ public class UserInfoController {
     private final UserService userService;
     private final UserMapper userMapper;
 
-    @Operation(summary = "Get list of user details ")
+    /*@Operation(summary = "Get list of user details ")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully returned users",
                     content = { @Content(mediaType = "application/json",
@@ -48,7 +46,7 @@ public class UserInfoController {
                     content = @Content),
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content)})
-    @GetMapping("/userinfos")
+    @GetMapping("/{user-name}/details")
     public ResponseEntity<List<UserInfoView>> getUserInformations(){
 
         try {
@@ -64,7 +62,7 @@ public class UserInfoController {
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-    }
+    }*/
 
 
     @Operation(summary = "Fetch user details for given user")
@@ -78,7 +76,7 @@ public class UserInfoController {
                     content = @Content),
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content)})
-    @GetMapping(value = "/userinfo/{user-name}")
+    @GetMapping(value = "/{user-name}/details")
     public ResponseEntity<UserInfoView> getUserInfo(@Parameter(description = "id of user to find") @PathVariable("user-name") String username){
         Optional<UserInfo> user = userInfoService.findByUsername(username);
         if(user.isPresent()){
@@ -99,7 +97,7 @@ public class UserInfoController {
                     content = @Content),
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content)})
-    @PostMapping("/userinfo/{user-name}")
+    @PostMapping("/{user-name}/details")
     public ResponseEntity<UserInfoView> createUserInfo(@Parameter(description = "username to create the user details for")
                                                        @PathVariable ("user-name") String userName,
                                                    @Valid @RequestBody CreateUserInfoRequest createUserInfoRequest){
@@ -126,18 +124,13 @@ public class UserInfoController {
                     content = @Content),
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content)})
-    @PutMapping("/user/{user-name}")
+    @PutMapping("/{user-name}/details")
     public ResponseEntity<UserInfoView> updateUserInfo(@Parameter(description = "id of user to update") @PathVariable("user-name") String username,
                                                @Valid @RequestBody CreateUserInfoRequest createUserInfoRequest){
         Optional<UserInfo> optionalUserInfo = userInfoService.findByUsername(username);
         if (optionalUserInfo.isPresent()) {
             UserInfo updatedUser = optionalUserInfo.get();
-            updatedUser.setFirstName(createUserInfoRequest.getFirstName());
-            updatedUser.setLastName(createUserInfoRequest.getLastName());
-            updatedUser.setEmailId(createUserInfoRequest.getEmailId());
-            updatedUser.setPhoneNumber(createUserInfoRequest.getPhoneNumber());
-            updatedUser.setAddresses(createUserInfoRequest.getAddresses());
-            //updatedUser.setUsername(username);
+            updatedUser = userMapper.updateUserInfo(updatedUser, createUserInfoRequest);
             userInfoService.saveUserInfo(updatedUser);
             log.info("User details updated successfully for {}",username);
             return new ResponseEntity<>(userMapper.toUserInfoView(updatedUser), HttpStatus.OK);

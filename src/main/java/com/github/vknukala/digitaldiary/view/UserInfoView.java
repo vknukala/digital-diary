@@ -11,14 +11,9 @@ public class UserInfoView {
 
 
     private String firstName;
-
     private String lastName;
-
     private String phoneNumber;
-
     private String emailId;
-
     private List<Address> addresses = new ArrayList<>();
-
     private String username;
 }
