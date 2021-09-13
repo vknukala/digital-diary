@@ -1,5 +1,6 @@
 package com.github.vknukala.digitaldiary.controller;
 
+import com.github.vknukala.digitaldiary.aspect.LogExecutionTime;
 import com.github.vknukala.digitaldiary.config.security.JwtTokenUtil;
 import com.github.vknukala.digitaldiary.dto.AuthenticationRequest;
 import com.github.vknukala.digitaldiary.dto.CreateUserRequest;
@@ -51,6 +52,7 @@ public class RegisterController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content)})
     @SecurityRequirements
+    @LogExecutionTime
     public ResponseEntity<UserView> authenticate(@RequestBody @Valid AuthenticationRequest request) {
         try {
             log.info("Trying to authenticate the user -  {}",request.getUsername());
@@ -74,6 +76,7 @@ public class RegisterController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content)})
     @SecurityRequirements
+    @LogExecutionTime
     public UserView register(@RequestBody @Valid CreateUserRequest request) {
         return userService.createUser(request);
     }

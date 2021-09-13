@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: digital-diary-deployment
+  labels:
+    app: digitaldiary
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: digitaldiary
+  template:
+    metadata:
+      labels:
+        app: digitaldiary
+    spec:
+      containers:
+        - name: digital-diary-container
+          image: digitaldiary

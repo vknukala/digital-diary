@@ -1,7 +1,8 @@
 **Digital Diary API**
 
-This is an Digital Diary API for creating new users and store their personal thoughts, memories, pictures etc
-It uses Spring boot framework and Mongo DB for persistance. The REST resources JWT token authentication is used for authenticating the resources
+This is a Digital Diary API for creating new users and store their personal thoughts, memories, pictures etc
+It uses Spring boot framework and Mongo DB for persistence. The REST resources are secured with 
+JWT token authentication.
 
 `context path` - /digital-diary/
 

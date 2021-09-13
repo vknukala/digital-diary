@@ -1,5 +1,6 @@
 package com.github.vknukala.digitaldiary.controller;
 
+import com.github.vknukala.digitaldiary.aspect.LogExecutionTime;
 import com.github.vknukala.digitaldiary.mapper.UserMapper;
 import com.github.vknukala.digitaldiary.model.User;
 import com.github.vknukala.digitaldiary.service.UserService;
@@ -43,19 +44,17 @@ public class UserController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content)})
     @GetMapping("/users")
+    @LogExecutionTime
     public ResponseEntity<List<UserView>> getUsers(){
 
         try {
             List<User> users = new ArrayList<User>();
-            List<UserView> userViews = new ArrayList<UserView>();
             userService.getUsers().forEach(users::add);
             if (users.isEmpty()) {
                 log.info("There are no users");
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
-            else{
-                userViews = userMapper.toUserViewList(users);
-            }
+            List<UserView> userViews = userMapper.toUserViewList(users);
             return new ResponseEntity<>(userViews, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);

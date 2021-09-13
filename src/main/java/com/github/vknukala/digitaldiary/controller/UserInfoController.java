@@ -1,5 +1,6 @@
 package com.github.vknukala.digitaldiary.controller;
 
+import com.github.vknukala.digitaldiary.aspect.LogExecutionTime;
 import com.github.vknukala.digitaldiary.dto.CreateUserInfoRequest;
 import com.github.vknukala.digitaldiary.error.UserNotFoundException;
 import com.github.vknukala.digitaldiary.mapper.UserMapper;
@@ -77,6 +78,7 @@ public class UserInfoController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content)})
     @GetMapping(value = "/{user-name}/details")
+    @LogExecutionTime
     public ResponseEntity<UserInfoView> getUserInfo(@Parameter(description = "id of user to find") @PathVariable("user-name") String username){
         Optional<UserInfo> user = userInfoService.findByUsername(username);
         if(user.isPresent()){
@@ -98,6 +100,7 @@ public class UserInfoController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content)})
     @PostMapping("/{user-name}/details")
+    @LogExecutionTime
     public ResponseEntity<UserInfoView> createUserInfo(@Parameter(description = "username to create the user details for")
                                                        @PathVariable ("user-name") String userName,
                                                    @Valid @RequestBody CreateUserInfoRequest createUserInfoRequest){
@@ -125,6 +128,7 @@ public class UserInfoController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content)})
     @PutMapping("/{user-name}/details")
+    @LogExecutionTime
     public ResponseEntity<UserInfoView> updateUserInfo(@Parameter(description = "id of user to update") @PathVariable("user-name") String username,
                                                @Valid @RequestBody CreateUserInfoRequest createUserInfoRequest){
         Optional<UserInfo> optionalUserInfo = userInfoService.findByUsername(username);

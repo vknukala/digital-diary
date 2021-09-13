@@ -1,5 +1,6 @@
 package com.github.vknukala.digitaldiary.controller;
 
+import com.github.vknukala.digitaldiary.aspect.LogExecutionTime;
 import com.github.vknukala.digitaldiary.dto.CreateUserDiaryNotesRequest;
 import com.github.vknukala.digitaldiary.mapper.UserMapper;
 import com.github.vknukala.digitaldiary.model.User;
@@ -46,17 +47,17 @@ public class UserDiaryNotesController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content)})
     @GetMapping("/user/{user-name}/diarynotes")
+    @LogExecutionTime
     public ResponseEntity<List<UserDiaryNotesView>> getUserDiaryNotes(@Parameter(description = "name of user to find diary notes")
                                                                  @PathVariable("user-name") String username){
         try {
             List<UserDiaryNote> userDiaryNotes = new ArrayList<>();
-            List<UserDiaryNotesView> userDiaryNotesViews = new ArrayList<>();
             userDiaryNotesService.getUserDiaryNotesByUsername(username).forEach(userDiaryNotes::add);
             if (userDiaryNotes.isEmpty()) {
                 log.info("There are no diary notes for the user {}",username);
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
-            userDiaryNotesViews = userMapper.toUserDiaryNotesViewList(userDiaryNotes);
+            List<UserDiaryNotesView> userDiaryNotesViews = userMapper.toUserDiaryNotesViewList(userDiaryNotes);
             return new ResponseEntity<>(userDiaryNotesViews, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -78,6 +79,7 @@ public class UserDiaryNotesController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content)})
     @PostMapping("/user/{user-name}/diarynotes")
+    @LogExecutionTime
     public ResponseEntity<UserDiaryNotesView> createDiaryNotes(@Parameter(description = "username to create a diary notes")
                                                           @PathVariable("user-name") String username,
                                                                @RequestBody CreateUserDiaryNotesRequest createUserDiaryNotesRequest){
