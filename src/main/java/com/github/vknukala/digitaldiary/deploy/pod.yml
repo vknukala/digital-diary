@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: digital-diary-pod
+  labels:
+    app: digital-diary
+    type: microservice-back-end
+spec:
+  containers:
+    - name: digital-diary-image
+      image: vknukala/digital-diary:1.0-SNAPSHOT
+      ports:
+        - containerPort: 8112

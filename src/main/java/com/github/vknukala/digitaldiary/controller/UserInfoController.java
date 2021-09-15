@@ -16,6 +16,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -103,17 +104,15 @@ public class UserInfoController {
     @LogExecutionTime
     public ResponseEntity<UserInfoView> createUserInfo(@Parameter(description = "username to create the user details for")
                                                        @PathVariable ("user-name") String userName,
-                                                   @Valid @RequestBody CreateUserInfoRequest createUserInfoRequest){
-        try {
-            User user = userService.loadUserByUsername(userName);
-            UserInfo userInfo = userMapper.toUserInfo(createUserInfoRequest);
-            userInfo.setUsername(user.getUsername());
-            userInfoService.insertUserInfo(userInfo);
-            log.info("User details {} created successfully ",userInfo);
-            return new ResponseEntity<UserInfoView>(userMapper.toUserInfoView(userInfo), HttpStatus.CREATED);
-        } catch(Exception e){
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+                                                       @Valid @RequestBody CreateUserInfoRequest createUserInfoRequest){
+
+        User user = userService.loadUserByUsername(userName);
+        UserInfo userInfo = userMapper.toUserInfo(createUserInfoRequest);
+        userInfo.setUsername(user.getUsername());
+        userInfoService.insertUserInfo(userInfo);
+        log.info("User details {} created successfully ",userInfo);
+        return new ResponseEntity<UserInfoView>(userMapper.toUserInfoView(userInfo), HttpStatus.CREATED);
+
     }
 
     @Operation(summary = "Update user information")
@@ -130,7 +129,7 @@ public class UserInfoController {
     @PutMapping("/{user-name}/details")
     @LogExecutionTime
     public ResponseEntity<UserInfoView> updateUserInfo(@Parameter(description = "id of user to update") @PathVariable("user-name") String username,
-                                               @Valid @RequestBody CreateUserInfoRequest createUserInfoRequest){
+                                                       @Valid @RequestBody CreateUserInfoRequest createUserInfoRequest){
         Optional<UserInfo> optionalUserInfo = userInfoService.findByUsername(username);
         if (optionalUserInfo.isPresent()) {
             UserInfo updatedUser = optionalUserInfo.get();

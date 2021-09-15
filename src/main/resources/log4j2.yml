@@ -1,0 +1,34 @@
+Configuration:
+  status: warn #FATAL<-ERROR<-WARN<-INFO<-DEBUG<-TRACE
+
+  appenders:
+    Console:
+      name: consoleLogger
+      target: SYSTEM_OUT
+      PatternLayout:
+        Pattern: "[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n"
+
+    RollingFile:
+      - name: rollingFileAppenderLogger
+        fileName: "logs/digital-diary-log4j2.log"
+        filePattern: "logs/$${date:yyyy-MM}/digital-diary-log4j2-%d{MM-dd-yyyy}-%i.log.gz"
+        PatternLayout:
+          pattern: "[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n"
+        Policies:
+          SizeBasedTriggeringPolicy:
+            size: 10MB
+        DefaultRollOverStrategy:
+          max: 10
+
+  Loggers:
+    logger:
+      - name: com.github.vknukala.digitaldiary
+        level: debug
+        additivity: false
+        AppenderRef:
+          - ref: rollingFileAppenderLogger
+          - ref: consoleLogger
+    Root:
+      level: info
+      AppenderRef:
+        ref: consoleLogger

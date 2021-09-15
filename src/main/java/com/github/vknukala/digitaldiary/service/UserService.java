@@ -1,6 +1,7 @@
 package com.github.vknukala.digitaldiary.service;
 
 import com.github.vknukala.digitaldiary.dto.CreateUserRequest;
+import com.github.vknukala.digitaldiary.dto.UpdateUserPasswordRequest;
 import com.github.vknukala.digitaldiary.mapper.UserMapper;
 import com.github.vknukala.digitaldiary.model.User;
 import com.github.vknukala.digitaldiary.repository.UserRepository;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import javax.validation.ValidationException;
 import java.util.List;
+import java.util.Optional;
 
 import static java.lang.String.format;
 
@@ -35,7 +37,7 @@ public class UserService  implements UserDetailsService{
 
         User user = userMapper.toUser(createUserRequest);
         user.setPassword(passwordEncoder.encode(createUserRequest.getPassword()));
-        user = userRepository.save(user);
+        user = userRepository.insert(user);
         UserView userView = userMapper.toUserView(user);
         log.info("User detals::{}", userView);
         return userView;
@@ -53,4 +55,19 @@ public class UserService  implements UserDetailsService{
         log.info("Total users are {}", users.size());
         return users;
     }
+
+    public UserView updateUser(User user, UpdateUserPasswordRequest updateUserPasswordRequest){
+        log.info("trying to create the user {}", user.getUsername());
+        if (!(updateUserPasswordRequest.getPassword().equalsIgnoreCase(updateUserPasswordRequest.getReenterPassword()))) {
+            throw new ValidationException("Reentered password should match the original password");
+        }
+        user = userMapper.updateUser(user, updateUserPasswordRequest);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        userRepository.save(user);
+        UserView userView = userMapper.toUserView(user);
+        log.debug("Updated user details::{}", userView);
+        return userView;
+    }
+
+
 }

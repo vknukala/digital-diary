@@ -49,19 +49,17 @@ public class UserDiaryNotesController {
     @GetMapping("/user/{user-name}/diarynotes")
     @LogExecutionTime
     public ResponseEntity<List<UserDiaryNotesView>> getUserDiaryNotes(@Parameter(description = "name of user to find diary notes")
-                                                                 @PathVariable("user-name") String username){
-        try {
-            List<UserDiaryNote> userDiaryNotes = new ArrayList<>();
-            userDiaryNotesService.getUserDiaryNotesByUsername(username).forEach(userDiaryNotes::add);
-            if (userDiaryNotes.isEmpty()) {
-                log.info("There are no diary notes for the user {}",username);
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            }
-            List<UserDiaryNotesView> userDiaryNotesViews = userMapper.toUserDiaryNotesViewList(userDiaryNotes);
-            return new ResponseEntity<>(userDiaryNotesViews, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+                                                                      @PathVariable("user-name") String username){
+
+        List<UserDiaryNote> userDiaryNotes = new ArrayList<>();
+        userDiaryNotesService.getUserDiaryNotesByUsername(username).forEach(userDiaryNotes::add);
+        if (userDiaryNotes.isEmpty()) {
+            log.info("There are no diary notes for the user {}",username);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
+        List<UserDiaryNotesView> userDiaryNotesViews = userMapper.toUserDiaryNotesViewList(userDiaryNotes);
+        return new ResponseEntity<>(userDiaryNotesViews, HttpStatus.OK);
+
     }
 
 
@@ -81,19 +79,14 @@ public class UserDiaryNotesController {
     @PostMapping("/user/{user-name}/diarynotes")
     @LogExecutionTime
     public ResponseEntity<UserDiaryNotesView> createDiaryNotes(@Parameter(description = "username to create a diary notes")
-                                                          @PathVariable("user-name") String username,
+                                                               @PathVariable("user-name") String username,
                                                                @RequestBody CreateUserDiaryNotesRequest createUserDiaryNotesRequest){
-        try{
-            User user = userService.loadUserByUsername(username);
-            UserDiaryNote userDiaryNote = userMapper.toUserDiaryNote(createUserDiaryNotesRequest);
-            userDiaryNote.setUsername(user.getUsername());
-            userDiaryNotesService.createUserDiaryNote(userDiaryNote);
-            log.info("Diary notes for user {} created successfully",username);
-            return new ResponseEntity<>(userMapper.toUserDiaryNoteView(userDiaryNote), HttpStatus.CREATED);
-        } catch(Exception e){
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-
-        }
+        User user = userService.loadUserByUsername(username);
+        UserDiaryNote userDiaryNote = userMapper.toUserDiaryNote(createUserDiaryNotesRequest);
+        userDiaryNote.setUsername(user.getUsername());
+        userDiaryNotesService.createUserDiaryNote(userDiaryNote);
+        log.info("Diary notes for user {} created successfully",username);
+        return new ResponseEntity<>(userMapper.toUserDiaryNoteView(userDiaryNote), HttpStatus.CREATED);
 
     }
 
